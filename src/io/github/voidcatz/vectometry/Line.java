@@ -49,8 +49,12 @@ public class Line {
 		return vec.y == this.slope()*vec.x + this.axisIntersects().y; //TODO: test
 	}
 	
-	public Line getPerpendicular(Vector point) {
-		return new Line(point, point.add(this.vector()));
+	public Vector project(Vector vec) {
+		return point1.add(vec.substract(point1).project(this.vector()));
+	}
+	
+	public Vector mirror(Vector vec) {
+		return vec.mirror(this.project(vec));
 	}
 	
 	public Line getParallel(Vector point) {

@@ -46,7 +46,11 @@ public class Vector {
 	}
 	
 	public Vector project(Vector vec) {
-		return this.scale(this.dot(vec) / vec.dot(vec));
+		return vec.scale(this.dot(vec) / vec.dot(vec));
+	}
+	
+	public Vector mirror(Vector center) {
+		return center.add(center.substract(this));
 	}
 	
 	public float slope() {
