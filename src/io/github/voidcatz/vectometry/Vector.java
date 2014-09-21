@@ -4,6 +4,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
 import io.github.voidcatz.vectometry.util.Angle;
+import io.github.voidcatz.vectometry.util.Matrix;
 
 public class Vector {
 	public final float x, y;
@@ -60,6 +61,11 @@ public class Vector {
 		return this.scale(length/this.length());
 	}
 	
+	public Vector resize(float length, Vector origin) {
+		Vector difference = this.substract(origin);
+		return origin.add(difference.resize(length));
+	}
+	
 	public Angle angle() {
 		return Angle.rad((float) Math.atan2(this.x, this.y));
 	}
@@ -68,14 +74,13 @@ public class Vector {
 		return Angle.rad((float) Math.acos(this.dot(vec) / (this.length() * vec.length())));
 	}
 	
-	public Vector rotate(Angle ang) {
-		return new Vector(this.x * ang.cos() - this.y * ang.sin(), this.x * ang.sin() + this.y * ang.cos());
+	public Vector rotate(Angle angle) {
+		return new Vector(this.x * angle.cos() - this.y * angle.sin(), this.x * angle.sin() + this.y * angle.cos());
 	}
 	
 	public Vector rotate(Angle angle, Vector center) {
-		Vector rotVec = this.substract(center);
-		rotVec.rotate(angle);
-		return rotVec.add(center);
+		Vector difference = this.substract(center);
+		return center.add(difference.rotate(angle));
 	}
 	
 	public boolean isParallel(Vector vec) {
@@ -95,9 +100,14 @@ public class Vector {
 		return this.add(difference.scale(0.5f));
 	}
 	
-//	public Vec2D matrixTransform(Matrix mat) throws DimensionExeption {
-//		return mat.multiply(this.toMatrix()).toVec2D();
-//	}
+	public float[] values() {
+		return new float[] {x, y};
+	}
+	
+	public Vector matrixTransform(Matrix mat) {
+		float[] result = mat.multiply(new Matrix(1, 2, this.values())).values();
+		return new Vector(result[0], result[1]);
+	}
 	
 	public Vector operate(UnaryOperator<Float> operator) {
 		return new Vector(operator.apply(this.x), operator.apply(this.y));
@@ -106,10 +116,6 @@ public class Vector {
 	public Vector operate(Vector vec, BinaryOperator<Float> operator) {
 		return new Vector(operator.apply(this.x, vec.x), operator.apply(this.y, vec.y));
 	}
-	
-//	public Matrix toMatrix() {
-//		return new Matrix(new float[][]{{x, y}});	
-//	}
 	
 	@Override
 	public boolean equals(Object obj) {
