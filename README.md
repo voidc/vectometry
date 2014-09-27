@@ -1,9 +1,9 @@
 Vectometry
 ==========
 
-Vectometry is a java library for vector geometry
+Vectometry is a java library for 2D vector geometry
 
-# Features
+# Goals
 - very easy and light weight
 - convenient vector calculations
 
