@@ -2,17 +2,38 @@ package io.github.voidcatz.vectometry;
 
 public class Segment extends Line {
 
-	public Segment(Vector point1, Vector point2) {
-		super(point1, point2);
+	/**#creates a new segment with the given start and end point
+	 * @param pointA start
+	 * @param pointB end
+	 */
+	public Segment(Vector pointA, Vector pointB) {
+		super(pointA, pointB.subtract(pointA));
 	}
 	
+	/**
+	 * @return start point
+	 */
+	public Vector pointA() {
+		return point;
+	}
+	
+	/**
+	 * @return end point
+	 */
+	public Vector pointB() {
+		return point.add(direction);
+	}
+	
+	/**
+	 * @return length of the segment
+	 */
 	public float length() {
-		return this.vector().length();
+		return this.direction.length();
 	}
 	
 	@Override
-	public boolean contains(Vector vec) {
-		return super.contains(vec) && vec.distance(point1) <= this.length();
+	public boolean contains(Vector vector) {
+		return super.contains(vector) && vector.distance(this.point) <= this.length();
 	}
 	
 	@Override
