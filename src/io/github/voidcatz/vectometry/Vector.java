@@ -84,6 +84,14 @@ public class Vector {
 	}
 	
 	/**
+	 * @param other vector
+	 * @return new vector where x is the cross product and y the dot product of this vector and the other vector
+	 */
+	public Vector crossdot(Vector other) {
+		return new Vector(this.cross(other), this.dot(other));
+	}
+	
+	/**
 	 * @param other vector which this vector should be projected on
 	 * @return the orthogonal projection of this vector on the other vector
 	 */
@@ -145,16 +153,13 @@ public class Vector {
 		return Angle.rad((float) Math.acos(this.dot(other) / (this.length() * other.length())));
 	}
 	
-//	public Vector xprod(Vector other) {
-//		return new Vector(this.x * other.y - this.y * other.x, this.x * other.x + this.y * other.y);
-//	}
-	
 	/**
 	 * @param angle by which the vector is rotated counter clockwise
 	 * @return rotated vector
 	 */
 	public Vector rotate(Angle angle) {
-		return new Vector(this.x * angle.cos() - this.y * angle.sin(), this.x * angle.sin() + this.y * angle.cos());
+		Vector rotation = new Vector(angle.sin(), angle.cos());
+		return new Vector(this.cross(rotation), this.dot(rotation));
 	}
 	
 	/**
@@ -250,7 +255,7 @@ public class Vector {
 	
 	@Override
 	public String toString() {
-		return String.format("(%f,%f)", this.x, this.y);
+		return "(" + this.x + ", " + this.y + ")";
 	}
 
 }
