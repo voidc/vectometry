@@ -3,14 +3,19 @@ package io.github.voidcatz.vectometry.util;
 public class Angle {
 	private final double angle;
 	
-	public enum AngleUnit{RAD, DEG}
+	public enum AngleUnit{RADIANS, DEGREES}
 	
+	/**
+	 * creates new angle with the given unit
+	 * @param angle
+	 * @param unit
+	 */
 	public Angle(double angle, AngleUnit unit) {
 		switch(unit) {
-		case RAD:
+		case RADIANS:
 			this.angle = Math.toRadians(angle);
 			break;
-		case DEG:
+		case DEGREES:
 			this.angle = angle;
 			break;
 		default:
@@ -19,11 +24,15 @@ public class Angle {
 		}
 	}
 	
+	/**
+	 * @param unit
+	 * @return number for of the angle in the given unit
+	 */
 	public double getAngle(AngleUnit unit) {
 		switch(unit) {
-		case RAD:
+		case RADIANS:
 			return Math.toRadians(angle);
-		case DEG:
+		case DEGREES:
 			return this.angle;
 		}
 		return angle;
@@ -34,30 +43,32 @@ public class Angle {
 	 * @return angle in radians
 	 */
 	public double rad() {
-		return getAngle(AngleUnit.RAD);
+		return getAngle(AngleUnit.RADIANS);
 	}
 	
 	/**
 	 * @return angle in degrees
 	 */
 	public double deg() {
-		return getAngle(AngleUnit.DEG);
+		return getAngle(AngleUnit.DEGREES);
 	}
 	
 	/**
+	 * creates new angle with the given angle
 	 * @param angle in radians
 	 * @return new angle
 	 */
 	public static Angle rad(double angle) {
-		return new Angle(angle, AngleUnit.RAD);
+		return new Angle(angle, AngleUnit.RADIANS);
 	}
 	
 	/**
+	 * creates new angle with the given angle
 	 * @param angle in degrees
 	 * @return new angle
 	 */
 	public static Angle deg(double angle) {
-		return new Angle(angle, AngleUnit.DEG);
+		return new Angle(angle, AngleUnit.DEGREES);
 	}
 	
 	
