@@ -2,6 +2,7 @@ package io.github.voidcatz.vectometry;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import io.github.voidcatz.vectometry.util.Angle;
@@ -70,11 +71,15 @@ public class Polygon {
 	public boolean contains(Vector point) { // http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test
 		boolean c = false;
 		for (int i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
-			if (((this.vertices[i].y > point.y) != (this.vertices[j].y > point.y))
-					&& (point.x < (this.vertices[j].x - this.vertices[i].x)
+			if (
+					((this.vertices[i].y > point.y) != (this.vertices[j].y > point.y))
+					&& (
+							point.x < (this.vertices[j].x - this.vertices[i].x)
 							* (point.y - this.vertices[i].y)
 							/ (this.vertices[j].y - this.vertices[i].y)
-							+ this.vertices[i].x))
+							+ this.vertices[i].x
+						)
+				)
 				c = !c;
 		}
 		return c;
@@ -140,15 +145,34 @@ public class Polygon {
 	 * @return the centroid of this polygon
 	 */
 	public Vector centroid() {
-		return null; //TODO: implement
+		float  scalar = 1 / 6 * this.area();
+		Vector centroid  = Vector.ZERO;
+		
+		for(int v = 0; v < vertices.length; v++) {
+			Vector v1 = vertices[v];
+			Vector v2 = vertices[v + 1 < vertices.length ? v + 1 : 0];
+			centroid = centroid.add(v1.add(v2).scale(v1.cross(v2)));
+		}
+		
+		return centroid.scale(scalar);
 	}
 	
-	/**
+	/** 
 	 * @param other
 	 * @return the point on this polygon which is nearest to the given polygon
 	 */
 	public Vector nearestPoint(Vector other) {
-		return null; //TODO: implement
+		Vector min = vertices[0];
+		for(Segment seg : getSegments()) {
+			Vector proj = seg.projection(other);
+			if(proj == null){
+				continue;
+			}
+			if(other.distance(proj) < other.distance(min)) {
+				min = proj;
+			}
+		}
+		return min;
 	}
 	
 	/**
@@ -156,7 +180,43 @@ public class Polygon {
 	 * @return unified polygon which consists of this polygon and the other polygon
 	 */
 	public Polygon join(Polygon other) {
-		return null; //TODO: implement
+		List<Vector> newVertices = new LinkedList<Vector>();
+		Polygon current = this;
+		Vector lastVtx = this.vertices[this.vertices.length-1];
+		Vector originalVtx = this.vertices[0];
+		boolean first = true;
+		
+		for(int cv = 0; ; cv++) {
+			if(cv >= current.vertices.length) {
+				cv = 0;
+			}
+			Vector vtx = current.vertices[cv];
+			if(vtx.equals(originalVtx) && !first) {
+				break;
+			}
+			first = false;
+			if(other.contains(vtx)) {
+				Segment seg = new Segment(lastVtx, vtx);
+				Vector is = null;
+				int v;
+				for(v = 0; v < other.vertices.length; v++) {
+					is = other.getSegments()[v].intersect(seg);
+					if(is != null) break;
+				}
+				newVertices.add(is);
+				lastVtx = is;
+				Polygon tmp = current;
+				current = other;
+				other = tmp;
+				cv = v + 1;
+			} else {
+				newVertices.add(vtx);
+				lastVtx = vtx;
+			}
+		}
+		
+		return new Polygon(newVertices.toArray(new Vector[0]));
+		
 	}
 	
 	/**
@@ -175,6 +235,16 @@ public class Polygon {
 			vtc[v] = vtc[v-2].subtract(vtc[v-1]).rotate(angle, vtc[v-1]);
 		}
 		return new Polygon(vtc);
+	}
+	
+	@Override
+	public String toString() {
+		String str = "[";
+		for(Vector vtx : vertices) {
+			str += vtx.toString();
+			str += ", ";
+		}
+		return str + "]";
 	}
 
 }
