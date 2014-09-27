@@ -32,6 +32,12 @@ public class Segment extends Line {
 	}
 	
 	@Override
+	public Vector projection(Vector point) {
+		Vector proj = super.projection(point);
+		return this.contains(proj) ? proj : null;
+	}
+	
+	@Override
 	public boolean contains(Vector vector) {
 		return super.contains(vector) && vector.distance(this.point) <= this.length();
 	}

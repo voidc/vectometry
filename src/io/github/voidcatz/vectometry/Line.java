@@ -82,7 +82,7 @@ public class Line {
 	 * @param point to be projected
 	 * @return the orthogonal projection of the vector on this line
 	 */
-	public Vector project(Vector point) {
+	public Vector projection(Vector point) {
 		return point.add(point.subtract(point).project(this.direction));
 	}
 	
@@ -90,8 +90,8 @@ public class Line {
 	 * @param point
 	 * @return reflected point
 	 */
-	public Vector reflect(Vector point) {
-		return point.reflect(this.project(point));
+	public Vector reflection(Vector point) {
+		return point.reflect(this.projection(point));
 	}
 	
 	/**
