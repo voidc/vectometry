@@ -1,13 +1,45 @@
 package io.github.voidcatz.vectometry;
 
 public class Rectangle extends Polygon {
+	/* vertices:
+	 *  3------2
+	 *  |      |
+	 *  0------1
+	 */
 	
+	/**
+	 * creates new rectangle with the given width, height and origin
+	 * @param origin bottom left corner of the rectangle
+	 * @param width
+	 * @param height
+	 */
 	public Rectangle(Vector origin, float width, float height) {
 		super(new Vector[]{
 				origin,
-				new Vector(origin.x, origin.y + height),
+				new Vector(origin.x + width, origin.y),
 				new Vector(origin.x + width, origin.y + height),
-				new Vector(origin.x + width, origin.y)
+				new Vector(origin.x, origin.y + height)
 				});
+	}
+	
+	/**
+	 * @return origin of the rectangle (bottom left corner)
+	 */
+	public Vector origin() {
+		return vertices[0];
+	}
+	
+	/**
+	 * @return the width of the rectangle
+	 */
+	public float width() {
+		return vertices[1].x - vertices[0].x;
+	}
+	
+	/**
+	 * @return the height of the rectangle
+	 */
+	public float height() {
+		return vertices[3].y - vertices[0].y;
 	}
 }
