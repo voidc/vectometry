@@ -22,7 +22,7 @@ public class Polygon {
 	/**
 	 * @return an array of all segments between the vertices
 	 */
-	public Segment[] getSegments() {
+	public Segment[] segments() {
 		Segment[] segments = new Segment[vertices.length];
 		for(int v = 0; v < vertices.length; v++) {
 			segments[v] = new Segment(vertices[v], vertices[v + 1 < vertices.length ? v + 1 : 0]);
@@ -35,7 +35,7 @@ public class Polygon {
 	 */
 	public float perimeter() {
 		float sum = 0;
-		for(Segment seg : getSegments()) {
+		for(Segment seg : segments()) {
 			sum += seg.length();
 		}
 		return sum;
@@ -56,9 +56,9 @@ public class Polygon {
 	 * @param line
 	 * @return all intersects with the given line
 	 */
-	public Vector[] intersect(Line line) {
+	public Vector[] intersections(Line line) {
 		List<Vector> intersects = new ArrayList<Vector>();
-		for(Segment seg : getSegments()) {
+		for(Segment seg : segments()) {
 			if(seg.intersect(line) != null) intersects.add(seg.intersect(line));
 		}
 		return intersects.toArray(new Vector[0]);
@@ -127,7 +127,7 @@ public class Polygon {
 	/**
 	 * @return the bounding rectangle of this polygon
 	 */
-	public Rectangle getBounds() {
+	public Rectangle bounds() {
 		float xMin = vertices[0].x;
 		float xMax = vertices[0].x;
 		float yMin = vertices[0].y;
@@ -163,7 +163,7 @@ public class Polygon {
 	 */
 	public Vector nearestPoint(Vector other) {
 		Vector min = vertices[0];
-		for(Segment seg : getSegments()) {
+		for(Segment seg : segments()) {
 			Vector proj = seg.projection(other);
 			if(proj == null){
 				continue;
@@ -179,7 +179,7 @@ public class Polygon {
 	 * @param other
 	 * @return unified polygon which consists of this polygon and the other polygon
 	 */
-	public Polygon join(Polygon other) {
+	public Polygon merge(Polygon other) {
 		List<Vector> newVertices = new LinkedList<Vector>();
 		Polygon current = this;
 		Vector lastVtx = this.vertices[this.vertices.length-1];
@@ -200,7 +200,7 @@ public class Polygon {
 				Vector is = null;
 				int v;
 				for(v = 0; v < other.vertices.length; v++) {
-					is = other.getSegments()[v].intersect(seg);
+					is = other.segments()[v].intersect(seg);
 					if(is != null) break;
 				}
 				newVertices.add(is);
@@ -225,7 +225,7 @@ public class Polygon {
 	 * @param vertices
 	 * @return regular polygon 
 	 */
-	public static Polygon regularPolygon(Segment side, int vertices) {
+	public static Polygon regular(Segment side, int vertices) {
 		if(vertices < 3) throw new InvalidParameterException("A Polygon must at least have 3 vertices");
 		Angle angle = Angle.deg((vertices - 1) * 180 / vertices);
 		Vector[] vtc = new Vector[vertices];
