@@ -1,11 +1,14 @@
 package io.github.voidcatz.vectometry;
 
+/**
+ * vertex indexing:
+ * <pre>
+ * 3------2
+ * |      |
+ * 0------1
+ * </pre>
+ */
 public class Rectangle extends Polygon {
-	/* vertices:
-	 *  3------2
-	 *  |      |
-	 *  0------1
-	 */
 	
 	/**
 	 * creates new rectangle with the given width, height and origin
