@@ -2,7 +2,8 @@ package io.github.voidcatz.vectometry;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.github.voidcatz.vectometry.util.Angle;
@@ -35,7 +36,7 @@ public class Polygon {
 	 */
 	public float perimeter() {
 		float sum = 0;
-		for(Segment seg : segments()) {
+		for(Segment seg : this.segments()) {
 			sum += seg.length();
 		}
 		return sum;
@@ -57,9 +58,21 @@ public class Polygon {
 	 * @return all intersects with the given line
 	 */
 	public Vector[] intersections(Line line) {
+		List<Vector> intersections = new ArrayList<Vector>();
+		for(Segment seg : this.segments()) {
+			if(seg.intersect(line) != null) intersections.add(seg.intersect(line));
+		}
+		return intersections.toArray(new Vector[0]);
+	}
+	
+	/**
+	 * @param other polygon
+	 * @return all intersects with the given polygon
+	 */
+	public Vector[] intersections(Polygon other) {
 		List<Vector> intersects = new ArrayList<Vector>();
-		for(Segment seg : segments()) {
-			if(seg.intersect(line) != null) intersects.add(seg.intersect(line));
+		for(Segment seg : this.segments()) {
+			intersects.addAll(Arrays.asList(other.intersections(seg)));
 		}
 		return intersects.toArray(new Vector[0]);
 	}
@@ -69,20 +82,13 @@ public class Polygon {
 	 * @return true if this polygon contains the given point
 	 */
 	public boolean contains(Vector point) { // http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test
-		boolean c = false;
-		for (int i = 0, j = this.vertices.length - 1; i < this.vertices.length; j = i++) {
-			if (
-					((this.vertices[i].y > point.y) != (this.vertices[j].y > point.y))
-					&& (
-							point.x < (this.vertices[j].x - this.vertices[i].x)
-							* (point.y - this.vertices[i].y)
-							/ (this.vertices[j].y - this.vertices[i].y)
-							+ this.vertices[i].x
-						)
-				)
-				c = !c;
+		Rectangle bounds = this.bounds();
+		if(!bounds.contains(point)) {
+			return false;
 		}
-		return c;
+		Segment ray = new Segment(new Vector(bounds.origin().x - bounds.width() / 100, point.y), point);
+		int intersections = this.intersections(ray).length;
+		return intersections % 2 != 0;
 	}
 	
 	/**
@@ -180,41 +186,19 @@ public class Polygon {
 	 * @return unified polygon which consists of this polygon and the other polygon
 	 */
 	public Polygon merge(Polygon other) {
-		List<Vector> newVertices = new LinkedList<Vector>();
-		Polygon current = this;
-		Vector lastVtx = this.vertices[this.vertices.length-1];
-		Vector originalVtx = this.vertices[0];
-		boolean first = true;
-		
-		for(int cv = 0; ; cv++) {
-			if(cv >= current.vertices.length) {
-				cv = 0;
-			}
-			Vector vtx = current.vertices[cv];
-			if(vtx.equals(originalVtx) && !first) {
-				break;
-			}
-			first = false;
-			if(other.contains(vtx)) {
-				Segment seg = new Segment(lastVtx, vtx);
-				Vector is = null;
-				int v;
-				for(v = 0; v < other.vertices.length; v++) {
-					is = other.segments()[v].intersect(seg);
-					if(is != null) break;
-				}
-				newVertices.add(is);
-				lastVtx = is;
-				Polygon tmp = current;
-				current = other;
-				other = tmp;
-				cv = v + 1;
-			} else {
-				newVertices.add(vtx);
-				lastVtx = vtx;
+		List<Vector> newVertices = new ArrayList<Vector>();
+		for(Vector vertex : this.vertices) {
+			if(!other.contains(vertex)) {
+				newVertices.add(vertex);
 			}
 		}
-		
+		for(Vector vertex : other.vertices) {
+			if(!this.contains(vertex)) {
+				newVertices.add(vertex);
+			}
+		}
+		newVertices.addAll(Arrays.asList(this.intersections(other)));
+		Collections.sort(newVertices);
 		return new Polygon(newVertices.toArray(new Vector[0]));
 		
 	}
