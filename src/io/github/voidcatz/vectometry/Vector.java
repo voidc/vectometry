@@ -6,7 +6,7 @@ import java.util.function.UnaryOperator;
 import io.github.voidcatz.vectometry.util.Angle;
 import io.github.voidcatz.vectometry.util.Matrix;
 
-public class Vector {
+public class Vector implements Comparable<Vector> {
 	public final float x, y;
 	
 	public static final Vector ZERO = new Vector(0, 0);
@@ -256,6 +256,11 @@ public class Vector {
 	@Override
 	public String toString() {
 		return "(" + this.x + ", " + this.y + ")";
+	}
+
+	@Override
+	public int compareTo(Vector other) {
+		return (int) (this.angle().deg() * this.length() - other.angle().deg() * other.length());
 	}
 
 }

@@ -1,6 +1,6 @@
 package io.github.voidcatz.vectometry.util;
 
-public class Angle {
+public class Angle implements Comparable<Angle> {
 	private final double angle;
 	
 	public enum AngleUnit{RADIANS, DEGREES}
@@ -103,6 +103,11 @@ public class Angle {
 	@Override
 	public String toString() {
 		return this.angle + "°";
+	}
+
+	@Override
+	public int compareTo(Angle other) {
+		return (int) (this.angle - other.angle);
 	}
 
 }
