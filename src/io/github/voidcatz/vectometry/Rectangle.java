@@ -42,4 +42,20 @@ public class Rectangle extends Polygon {
 	public float height() {
 		return vertices[3].y - vertices[0].y;
 	}
+	
+	@Override
+	public boolean contains(Vector point) {
+		return point.x >= vertices[0].x && point.y >= vertices[0].y && point.x <= vertices[2].x && point.y <= vertices[2].y;
+	}
+	
+	@Override
+	public Rectangle bounds() {
+		return this;
+	}
+	
+	@Override
+	public float area() {
+		return this.height() * this.width();
+	}
+	
 }
