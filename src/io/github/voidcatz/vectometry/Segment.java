@@ -2,12 +2,22 @@ package io.github.voidcatz.vectometry;
 
 public class Segment extends Line {
 
-	/**#creates a new segment with the given start and end point
+	/**
+	 * creates a new segment with the given start and end point
 	 * @param pointA start
 	 * @param pointB end
 	 */
 	public Segment(Vector pointA, Vector pointB) {
 		super(pointA, pointB.subtract(pointA));
+	}
+	
+	/**
+	 * creates a segment from this vector
+	 * @param vector
+	 * @see Line#Line(Vector)
+	 */
+	public Segment(Vector vector) {
+		this(Vector.ZERO, vector);
 	}
 	
 	/**
