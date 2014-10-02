@@ -1,8 +1,5 @@
 package io.github.voidcatz.vectometry;
 
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
-
 import io.github.voidcatz.vectometry.util.Angle;
 import io.github.voidcatz.vectometry.util.Matrix;
 
@@ -33,7 +30,7 @@ public class Vector implements Comparable<Vector> {
 	 * @return the sum of this vector and the other vector
 	 */
 	public Vector add(Vector other) {
-		return this.operate(other, (a, b) -> a + b);
+		return new Vector(this.x + other.x, this.y + other.y);
 	}
 	
 	/**
@@ -41,7 +38,7 @@ public class Vector implements Comparable<Vector> {
 	 * @return the difference between this vector and the other vector
 	 */
 	public Vector subtract(Vector other) {
-		return this.operate(other, (a, b) -> a - b);
+		return new Vector(this.x - other.x, this.y - other.y);
 	}
 	
 	/**
@@ -56,7 +53,7 @@ public class Vector implements Comparable<Vector> {
 	 * @return the product of this vector and the other vector
 	 */
 	public Vector multiply(Vector other) {
-		return this.operate(other, (a, b) -> a * b);
+		return new Vector(this.x * other.x, this.y * other.y);
 	}
 
 	/**
@@ -64,7 +61,7 @@ public class Vector implements Comparable<Vector> {
 	 * @return this vector multiplied by the scalar 
 	 */
 	public Vector scale(float scalar) {
-		return this.operate(a -> a * scalar);
+		return new Vector(this.x * scalar, this.y * scalar);
 	}
 	
 	/**
@@ -221,24 +218,6 @@ public class Vector implements Comparable<Vector> {
 	public Vector matrixTransform(Matrix matrix) {
 		float[] result = matrix.multiply(new Matrix(1, 2, this.values())).values();
 		return new Vector(result[0], result[1]);
-	}
-	
-	/**
-	 * @param operator
-	 * @return manipulated vector
-	 */
-	public Vector operate(UnaryOperator<Float> operator) {
-		return new Vector(operator.apply(this.x), operator.apply(this.y));
-	}
-	
-	
-	/**
-	 * @param other
-	 * @param operator
-	 * @return manipulated vector
-	 */
-	public Vector operate(Vector other, BinaryOperator<Float> operator) {
-		return new Vector(operator.apply(this.x, other.x), operator.apply(this.y, other.y));
 	}
 	
 	@Override
