@@ -43,8 +43,8 @@ public class Segment extends Line {
 	}
 	
 	@Override
-	public Vector intersect(Line other) {
-		Vector intersect = super.intersect(other);
+	public Vector intersection(Line other) {
+		Vector intersect = super.intersection(other);
 		return this.contains(intersect) ? intersect : null;
 	}
 

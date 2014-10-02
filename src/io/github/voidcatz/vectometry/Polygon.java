@@ -60,7 +60,7 @@ public class Polygon {
 	public Vector[] intersections(Line line) {
 		List<Vector> intersections = new ArrayList<Vector>();
 		for(Segment seg : this.segments()) {
-			if(seg.intersect(line) != null) intersections.add(seg.intersect(line));
+			if(seg.intersection(line) != null) intersections.add(seg.intersection(line));
 		}
 		return intersections.toArray(new Vector[0]);
 	}
