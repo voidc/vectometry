@@ -47,5 +47,14 @@ public class Segment extends Line {
 		Vector intersect = super.intersection(other);
 		return this.contains(intersect) ? intersect : null;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Segment)) {
+			return false;
+		}
+		Segment other = (Segment) obj;
+		return this.point.equals(other.point) && this.direction.equals(other.direction);
+	}
 
 }

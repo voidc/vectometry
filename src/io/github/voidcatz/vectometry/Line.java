@@ -109,5 +109,14 @@ public class Line {
 	public boolean isParallel(Line other) {
 		return this.direction.isParallel(other.direction);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Line)) {
+			return false;
+		}
+		Line other = (Line) obj;
+		return this.axisIntersections().equals(other.axisIntersections());
+	}
 
 }
