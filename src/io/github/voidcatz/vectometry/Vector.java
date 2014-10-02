@@ -112,6 +112,23 @@ public class Vector implements Comparable<Vector> {
 	}
 	
 	/**
+	 * @return number of the quadrant containing the vector (1 to 4) or 0 if either x or y equal 0
+	 */
+	public int quadrant() {
+		if(this.x > 0 && this.y > 0) {
+			return 1;
+		} else if(this.x < 0 && this.y > 0) {
+			return 2;
+		} else if(this.x < 0 && this.y < 0) {
+			return 3;
+		} else if(this.x > 0 && this.y < 0) {
+			return 4;
+		} else { //x == 0 || y == 0
+			return 0;
+		}
+	}
+	
+	/**
 	 * @return the length of this vector
 	 */
 	public float length() {
@@ -238,7 +255,7 @@ public class Vector implements Comparable<Vector> {
 	}
 
 	@Override
-	public int compareTo(Vector other) {
+	public int compareTo(Vector other) { //not working as intended: should work for every quadrant and weight length more
 		return (int) (this.angle().deg() * this.length() - other.angle().deg() * other.length());
 	}
 
