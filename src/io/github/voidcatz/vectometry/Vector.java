@@ -53,6 +53,13 @@ public class Vector implements Comparable<Vector> {
 	}
 	
 	/**
+	 * @return vector with floored coordinates
+	 */
+	public Vector floor() {
+		return new Vector((float) Math.floor(this.x), (float) Math.floor(this.y));
+	}
+	
+	/**
 	 * @param other vector which should be multiplied
 	 * @return the product of this vector and the other vector
 	 */
