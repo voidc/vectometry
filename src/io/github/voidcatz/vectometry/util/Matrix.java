@@ -139,7 +139,7 @@ public class Matrix {
 	 * @param other matrix
 	 * @return new matrix whose values are the differences of these values and the other matrix's values
 	 */
-	public Matrix substract(Matrix mat) {
+	public Matrix subtract(Matrix mat) {
 		return this.operate(mat, (a, b) -> a - b);
 	}
 	
