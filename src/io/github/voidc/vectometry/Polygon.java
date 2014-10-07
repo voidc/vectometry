@@ -1,4 +1,4 @@
-package io.github.voidcatz.vectometry;
+package io.github.voidc.vectometry;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.voidcatz.vectometry.util.Angle;
+import io.github.voidc.vectometry.util.Angle;
 
 public class Polygon implements IShape {
 	public final Vector[] vertices;

@@ -1,6 +1,6 @@
-package io.github.voidcatz.vectometry;
+package io.github.voidc.vectometry;
 
-import io.github.voidcatz.vectometry.util.Angle;
+import io.github.voidc.vectometry.util.Angle;
 
 public class Line {
 	public final Vector point, direction;

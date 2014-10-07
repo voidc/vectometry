@@ -1,6 +1,6 @@
-package io.github.voidcatz.vectometry.util;
+package io.github.voidc.vectometry.util;
 
-import io.github.voidcatz.vectometry.Vector;
+import io.github.voidc.vectometry.Vector;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;

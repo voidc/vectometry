@@ -1,4 +1,4 @@
-package io.github.voidcatz.vectometry;
+package io.github.voidc.vectometry;
 
 /**
  * vertex indexing:

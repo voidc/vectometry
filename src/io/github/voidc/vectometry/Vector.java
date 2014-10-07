@@ -1,7 +1,7 @@
-package io.github.voidcatz.vectometry;
+package io.github.voidc.vectometry;
 
-import io.github.voidcatz.vectometry.util.Angle;
-import io.github.voidcatz.vectometry.util.Matrix;
+import io.github.voidc.vectometry.util.Angle;
+import io.github.voidc.vectometry.util.Matrix;
 
 public class Vector implements Comparable<Vector> {
 	public final float x, y;

@@ -1,4 +1,4 @@
-package io.github.voidcatz.vectometry.util;
+package io.github.voidc.vectometry.util;
 
 public class Angle implements Comparable<Angle> {
 	private final double angle;
