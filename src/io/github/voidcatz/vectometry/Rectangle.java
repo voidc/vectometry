@@ -38,12 +38,20 @@ public class Rectangle extends Polygon {
 	public float width() {
 		return vertices[1].x - vertices[0].x;
 	}
-	
+	   
 	/**
 	 * @return the height of the rectangle
 	 */
 	public float height() {
 		return vertices[3].y - vertices[0].y;
+	}
+	
+	/**
+	 * @param padding distance by which each side is moved (if negative the rectangle gets bigger)
+	 * @return new rectangle with the specified padding to this polygon
+	 */
+	public Rectangle padding(float padding) {
+		return new Rectangle(this.origin().add(new Vector(padding, padding)), this.width() - 2 * padding, this.height() - 2 * padding);
 	}
 	
 	@Override
