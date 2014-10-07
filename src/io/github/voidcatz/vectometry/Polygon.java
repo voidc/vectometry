@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.github.voidcatz.vectometry.util.Angle;
 
-public class Polygon {
+public class Polygon implements IShape {
 	public final Vector[] vertices;
 	
 	/**
@@ -21,6 +21,24 @@ public class Polygon {
 	}
 	
 	/**
+	 * creates new regular polygon with the given side and the specified number of vertices
+	 * @param side
+	 * @param vertices
+	 * @return regular polygon 
+	 */
+	public static Polygon regular(Segment side, int vertices) {
+		if(vertices < 3) throw new InvalidParameterException("A Polygon must at least have 3 vertices");
+		Angle angle = Angle.deg((vertices - 1) * 180 / vertices);
+		Vector[] vtc = new Vector[vertices];
+		vtc[0] = side.pointA();
+		vtc[1] = side.pointB();
+		for(int v = 2; v < vertices; v++) {
+			vtc[v] = vtc[v-2].subtract(vtc[v-1]).rotate(angle, vtc[v-1]);
+		}
+		return new Polygon(vtc);
+	}
+
+	/**
 	 * @return an array of all segments between the vertices
 	 */
 	public Segment[] segments() {
@@ -32,25 +50,37 @@ public class Polygon {
 	}
 	
 	/**
-	 * @return the perimeter of this polygon
+	 * @return all diagonals of this polygons
+	 * the polygon must have more than three vertices or else the returned array will be empty
 	 */
-	public float perimeter() {
-		float sum = 0;
-		for(Segment seg : this.segments()) {
-			sum += seg.length();
+	public Segment[] diagonals() {
+		if(this.vertices.length <= 3) {
+			return new Segment[0];
 		}
-		return sum;
+		int newN = (this.n() * (this.n() - 3)) / 2;
+		List<Segment> diagonals = new ArrayList<Segment>();
+		for(int x = 0; diagonals.size() < newN; x++) {
+			for(int v = 0; v < this.n(); v++) {
+				Vector v2 = this.vertices[v == this.vertices.length - x ? 0 : v + x];
+				Segment seg = new Segment(this.vertices[v], v2);
+				if(!diagonals.contains(seg)) diagonals.add(seg);
+			}
+		}
+		return diagonals.toArray(new Segment[newN]);
+		
 	}
 	
 	/**
-	 * @return the area of this polygon
+	 * @return an array of all angles between the vertices
 	 */
-	public float area() {
-		float sum = 0;
+	public Angle[] angles() {
+		Angle[] angles = new Angle[vertices.length];
 		for(int v = 0; v < vertices.length; v++) {
-			sum += vertices[v].cross( vertices[v + 1 < vertices.length ? v + 1 : 0]); //TODO: test
+			Vector v1 = this.vertices[v == 0 ? this.vertices.length - 1 : v - 1];
+			Vector v2 = this.vertices[v == this.vertices.length - 1 ? 0 : v + 1];
+			angles[v] = this.vertices[v].subtract(v1).angle(v2.subtract(this.vertices[v]));
 		}
-		return Math.abs(sum/2);
+		return angles;
 	}
 	
 	/**
@@ -64,7 +94,7 @@ public class Polygon {
 		}
 		return intersections.toArray(new Vector[0]);
 	}
-	
+
 	/**
 	 * @param other polygon
 	 * @return all intersects with the given polygon
@@ -76,12 +106,27 @@ public class Polygon {
 		}
 		return intersects.toArray(new Vector[0]);
 	}
+
+	@Override
+	public float perimeter() {
+		float sum = 0;
+		for(Segment seg : this.segments()) {
+			sum += seg.length();
+		}
+		return sum;
+	}
 	
-	/**
-	 * @param point
-	 * @return true if this polygon contains the given point
-	 */
-	public boolean contains(Vector point) { // http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test
+	@Override
+	public float area() {
+		float sum = 0;
+		for(int v = 0; v < vertices.length; v++) {
+			sum += vertices[v].cross( vertices[v + 1 < vertices.length ? v + 1 : 0]); //TODO: test
+		}
+		return Math.abs(sum/2);
+	}
+	
+	@Override
+	public boolean contains(Vector point) {
 		Rectangle bounds = this.bounds();
 		if(!bounds.contains(point)) {
 			return false;
@@ -105,10 +150,7 @@ public class Polygon {
 		return new Polygon(vtc);
 	}
 	
-	/**
-	 * @param tranformation vector by which each vertex is moved
-	 * @return polygon which is moved by the transformation
-	 */
+	@Override
 	public Polygon move(Vector tranformation) {
 		Vector[] vtc = new Vector[this.vertices.length];
 		for(int v = 0; v < this.vertices.length; v++) {
@@ -131,8 +173,15 @@ public class Polygon {
 	}
 	
 	/**
-	 * @return the bounding rectangle of this polygon
+	 * @param width the new width of the bounding box of the returned polygon
+	 * @param height the new height of the bounding box of the returned polygon
+	 * @return a skewed polygon with the given width and height
 	 */
+	public Polygon resize(float width, float height) {
+		return null; //TODO: implement
+	}
+	
+	@Override
 	public Rectangle bounds() {
 		float xMin = vertices[0].x;
 		float xMax = vertices[0].x;
@@ -145,6 +194,13 @@ public class Polygon {
 			if(vertex.y < xMax) yMin = vertex.y;
 		}
 		return new Rectangle(new Vector(xMin, yMin), xMax - xMin, yMax - yMin);
+	}
+	
+	/**
+	 * @return number of vertices
+	 */
+	public int n() {
+		return this.vertices.length;
 	}
 	
 	/**
@@ -204,21 +260,52 @@ public class Polygon {
 	}
 	
 	/**
-	 * creates new regular polygon with the given side and the specified number of vertices
-	 * @param side
-	 * @param vertices
-	 * @return regular polygon 
+	 * @param other polygon
+	 * @return true if the other polygon is congruent with this polygon (all segment lengths and angles match)
 	 */
-	public static Polygon regular(Segment side, int vertices) {
-		if(vertices < 3) throw new InvalidParameterException("A Polygon must at least have 3 vertices");
-		Angle angle = Angle.deg((vertices - 1) * 180 / vertices);
-		Vector[] vtc = new Vector[vertices];
-		vtc[0] = side.pointA();
-		vtc[1] = side.pointB();
-		for(int v = 2; v < vertices; v++) {
-			vtc[v] = vtc[v-2].subtract(vtc[v-1]).rotate(angle, vtc[v-1]);
+	public boolean isCongruent(Polygon other) {
+		if(other.vertices.length != this.vertices.length) {
+			return false;
 		}
-		return new Polygon(vtc);
+		theseSegments:
+		for(Segment seg : this.segments()) {
+			for(Segment otherSeg : other.segments()) {
+				if(otherSeg.equals(seg)) {
+					continue theseSegments;
+				}
+			}
+			return false;
+		}
+	
+		theseAngles:
+		for(Angle ang : this.angles()) {
+			for(Angle otherAng : other.angles()) {
+				if(otherAng.equals(ang)) {
+					continue theseAngles;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Polygon)) {
+			return false;
+		}
+		Polygon poly = (Polygon) obj;
+		for(int vtx = 0; vtx < this.vertices.length; vtx++) {
+			if(!(vtx < poly.vertices.length && this.vertices[vtx].equals(poly.vertices[vtx]))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	protected Polygon clone() {
+		return new Polygon(this.vertices.clone());
 	}
 	
 	@Override
