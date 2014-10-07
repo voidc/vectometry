@@ -64,7 +64,8 @@ public class Segment extends Line {
 			return false;
 		}
 		Segment other = (Segment) obj;
-		return this.point.equals(other.point) && this.direction.equals(other.direction);
+		return (this.pointA().equals(other.pointA()) && this.pointB().equals(other.pointB()))
+			|| (this.pointA().equals(other.pointB()) && this.pointB().equals(other.pointA()));
 	}
 
 }
