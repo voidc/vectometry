@@ -60,8 +60,20 @@ public class Vector implements Comparable<Vector> {
 	}
 	
 	/**
+	 * @param others other vectors
+	 * @return the average of this vector and all given other vectors
+	 */
+	public Vector average(Vector... others) {
+		Vector result = this;
+		for(int v = 0; v < others.length; v++) {
+			result = result.add(others[v]);
+		}
+		return result.scale(1f / others.length);
+	}
+	
+	/**
 	 * @param other vector which should be multiplied
-	 * @return the product of this vector and the other vector
+	 * @return the product of the coordinates of the vectors
 	 */
 	public Vector multiply(Vector other) {
 		return new Vector(this.x * other.x, this.y * other.y);
@@ -266,7 +278,7 @@ public class Vector implements Comparable<Vector> {
 	}
 
 	@Override
-	public int compareTo(Vector other) { //not working as intended: should work for every quadrant and weight length more
+	public int compareTo(Vector other) {
 		return (int) (this.angle().deg() * this.length() - other.angle().deg() * other.length());
 	}
 
