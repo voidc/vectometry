@@ -120,7 +120,7 @@ public class Polygon implements IShape {
 	public float area() {
 		float sum = 0;
 		for(int v = 0; v < vertices.length; v++) {
-			sum += vertices[v].cross( vertices[v + 1 < vertices.length ? v + 1 : 0]); //TODO: test
+			sum += vertices[v].cross( vertices[v + 1 < vertices.length ? v + 1 : 0]);
 		}
 		return Math.abs(sum/2);
 	}
@@ -137,9 +137,9 @@ public class Polygon implements IShape {
 	}
 	
 	/**
-	 * @param scalar
-	 * @param center
-	 * @return scaled polygon
+	 * @param scalar factor by which the polygon is scaled
+	 * @param center 
+	 * @return polygon which is scaled starting from the given center point
 	 */
 	public Polygon scale(float scalar, Vector center) {
 		Vector[] vtc = new Vector[this.vertices.length];
@@ -148,6 +148,38 @@ public class Polygon implements IShape {
 			vtc[v] = center.add(difference.scale(scalar));
 		}
 		return new Polygon(vtc);
+	}
+	
+	/**
+	 * @param scalarX factor by which the polygon is scaled in the x direction
+	 * @param scalarY factor by which the polygon is scaled in the y direction
+	 * @param center 
+	 * @return polygon which is scaled starting from the given center point
+	 */
+	public Polygon scale(float scalarX, float scalarY, Vector center) {
+		Vector[] vtc = new Vector[this.vertices.length];
+		for(int v = 0; v < this.vertices.length; v++) {
+			Vector difference = this.vertices[v].subtract(center);
+			vtc[v] = center.add(difference.multiply(new Vector(scalarX, scalarY)));
+		}
+		return new Polygon(vtc);
+	}
+	
+	/**
+	 * @param scalar factor by which the polygon is scaled
+	 * @return polygon which is scaled starting from the centroid
+	 */
+	public Polygon scale(float scalar) {
+		return this.scale(scalar, this.centroid());
+	}
+	
+	/**
+	 * @param scalarX factor by which the polygon is scaled in the x direction
+	 * @param scalarY factor by which the polygon is scaled in the y direction
+	 * @return polygon which is scaled starting from the centroid
+	 */
+	public Polygon scale(float scalarX, float scalarY) {
+		return this.scale(scalarX, scalarY, this.centroid());
 	}
 	
 	@Override
@@ -173,12 +205,15 @@ public class Polygon implements IShape {
 	}
 	
 	/**
-	 * @param width the new width of the bounding box of the returned polygon
-	 * @param height the new height of the bounding box of the returned polygon
-	 * @return a skewed polygon with the given width and height
+	 * @param angle
+	 * @return polygon which is rotated by the angle around the center
 	 */
-	public Polygon resize(float width, float height) {
-		return null; //TODO: implement
+	public Polygon rotate(Angle angle) {
+		Vector[] vtc = new Vector[this.vertices.length];
+		for(int v = 0; v < this.vertices.length; v++) {
+			vtc[v] = this.vertices[v].rotate(angle, this.centroid());
+		}
+		return new Polygon(vtc);
 	}
 	
 	@Override
