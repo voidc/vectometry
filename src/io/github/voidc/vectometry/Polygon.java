@@ -82,18 +82,6 @@ public class Polygon implements IShape {
 		}
 		return angles;
 	}
-	
-	/**
-	 * @param line
-	 * @return all intersects with the given line
-	 */
-	public Vector[] intersections(Line line) {
-		List<Vector> intersections = new ArrayList<Vector>();
-		for(Segment seg : this.segments()) {
-			if(seg.intersection(line) != null) intersections.add(seg.intersection(line));
-		}
-		return intersections.toArray(new Vector[0]);
-	}
 
 	/**
 	 * @param other polygon
@@ -102,10 +90,22 @@ public class Polygon implements IShape {
 	public Vector[] intersections(Polygon other) {
 		List<Vector> intersects = new ArrayList<Vector>();
 		for(Segment seg : this.segments()) {
-			intersects.addAll(Arrays.asList(other.intersections(seg)));
+			intersects.addAll(Arrays.asList(seg.intersection(seg)));
 		}
 		return intersects.toArray(new Vector[0]);
 	}
+	
+//	/**
+//	 * @param other
+//	 * @return all intersections between the outline of this shape and the other shape
+//	 */
+//	public Vector[] intersections(IShape shape) {
+//		if(shape instanceof Polygon) {
+//			return this.intersections((Polygon) shape);
+//		} else if(shape instanceof Circle) {
+//			return ((Circle) shape).intersections(this);
+//		} else return null;
+//	}
 
 	@Override
 	public float perimeter() {
@@ -132,7 +132,7 @@ public class Polygon implements IShape {
 			return false;
 		}
 		Segment ray = new Segment(new Vector(bounds.origin().x - bounds.width() / 100, point.y), point);
-		int intersections = this.intersections(ray).length;
+		int intersections = ray.intersections(this).length;
 		return intersections % 2 != 0;
 	}
 	

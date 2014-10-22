@@ -1,5 +1,8 @@
 package io.github.voidc.vectometry;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Segment extends Line {
 
 	/**
@@ -54,8 +57,30 @@ public class Segment extends Line {
 	
 	@Override
 	public Vector intersection(Line other) {
-		Vector intersect = super.intersection(other);
-		return this.contains(intersect) ? intersect : null;
+		Vector intersection = super.intersection(other);
+		return this.contains(intersection) ? intersection : null;
+	}
+	
+	@Override
+	public Vector[] intersections(Circle circle) {
+		List<Vector> intersections = Arrays.asList(super.intersections(circle));
+		for(Vector is : intersections) {
+			if(!this.contains(is)) {
+				intersections.remove(is);
+			}
+		}
+		return intersections.toArray(new Vector[intersections.size()]);
+	}
+	
+	@Override
+	public Vector[] intersections(Polygon poly) {
+		List<Vector> intersections = Arrays.asList(super.intersections(poly));
+		for(Vector is : intersections) {
+			if(!this.contains(is)) {
+				intersections.remove(is);
+			}
+		}
+		return intersections.toArray(new Vector[intersections.size()]);
 	}
 	
 	@Override

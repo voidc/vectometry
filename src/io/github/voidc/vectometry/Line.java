@@ -1,5 +1,8 @@
 package io.github.voidc.vectometry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.github.voidc.vectometry.util.Angle;
 
 public class Line {
@@ -56,10 +59,41 @@ public class Line {
 	 * @param other
 	 * @return the intersect between this line and the other line
 	 */
-	public Vector intersection(Line other) { // http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+	public Vector intersection(Line other) {
 		float x = (other.axisIntersections().y - this.axisIntersections().y) / (this.slope() - other.slope());
 		float y = this.slope() * x + this.axisIntersections().y;
 		return new Vector(x, y);
+	}
+	
+	/**
+	 * @param circle
+	 * @return all intersections with the given circle
+	 */
+	public Vector[] intersections(Circle circle) {
+        float m = this.slope();
+        float t = this.axisIntersections().y;
+        float cx = circle.center.x;
+        float cy = circle.center.y;
+        float r = circle.radius;
+        
+        float s = cx*m*(2*cy-cx*m+2*t)-cy*(cy+2*t)+2*r*(m*m+1)-t*t;
+        float x1 = (float) ((-Math.sqrt(s)-cx-cy*m-m*t) / (m*m+1));
+        float y1 = m*x1+t;
+        float x2 = (float) ((Math.sqrt(s)-cx-cy*m-m*t) / (m*m+1));
+        float y2 = m*x2+t;
+        return new Vector[]{new Vector(x1, y1), new Vector(x2, y2)};
+    }
+	
+	/**
+	 * @param poly
+	 * @return all intersects with the given polygon
+	 */
+	public Vector[] intersections(Polygon poly) {
+		List<Vector> intersections = new ArrayList<Vector>();
+		for(Segment seg : poly.segments()) {
+			if(seg.intersection(this) != null) intersections.add(seg.intersection(this));
+		}
+		return intersections.toArray(new Vector[intersections.size()]);
 	}
 	
 	/**

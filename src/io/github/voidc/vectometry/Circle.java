@@ -1,5 +1,9 @@
 package io.github.voidc.vectometry;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Circle implements IShape {
 	public final Vector center;
 	public final float radius;
@@ -23,16 +27,27 @@ public class Circle implements IShape {
 	public float area() {
 		return (float) (Math.pow(radius, 2) * Math.PI);
 	}
-	
-	private Vector[] intersections(Line line) { //segment handling??
-        return null; //TODO: implement
-    }
 
-    private Vector[] intersections(Polygon poly) {
-        return null; //TODO: implement
+    /**
+     * @param poly
+     * @return all intersections with the given polygon
+     */
+    public Vector[] intersections(Polygon poly) {
+        List<Vector> intersections = new ArrayList<Vector>();
+        for(Segment seg : poly.segments()) {
+        	Vector[] segIsecs = seg.intersections(this);
+        	if(segIsecs.length > 0) {
+        		intersections.addAll(Arrays.asList(segIsecs));
+        	}
+        }
+        return intersections.toArray(new Vector[intersections.size()]);
     }
 	
-	private Vector[] intersections(Circle other) {
+	/**
+	 * @param other
+	 * @return all intersections with the given circle
+	 */
+	public Vector[] intersections(Circle other) {
         if(this.center.equals(other.center)) {  //the two circles are parallel
             return new Vector[0];
         }
