@@ -11,7 +11,7 @@ package io.github.voidc.vectometry;
 public class Rectangle extends Polygon {
 	
 	/**
-	 * creates new rectangle with the given width, height and origin
+	 * creates a new axis aligned rectangle with the given width, height and origin
 	 * @param origin bottom left corner of the rectangle
 	 * @param width
 	 * @param height
@@ -23,6 +23,21 @@ public class Rectangle extends Polygon {
 				new Vector(origin.x + width, origin.y + height),
 				new Vector(origin.x, origin.y + height)
 				});
+	}
+
+	/**
+	 * creates new rectangle with the given width, height and origin
+	 * @param origin bottom left corner of the rectangle
+	 * @param vec1
+	 * @param vec2
+	 */
+	public Rectangle(Vector origin, Vector vec1, Vector vec2) {
+		super(new Vector[]{
+				origin,
+				origin.add(vec1),
+				origin.add(vec1).add(vec2),
+				origin.add(vec2)
+		});
 	}
 	
 	/**
@@ -36,14 +51,14 @@ public class Rectangle extends Polygon {
 	 * @return the width of the rectangle
 	 */
 	public float width() {
-		return vertices[1].x - vertices[0].x;
+		return vertices[0].distance(vertices[1]);
 	}
 	   
 	/**
 	 * @return the height of the rectangle
 	 */
 	public float height() {
-		return vertices[3].y - vertices[0].y;
+		return vertices[1].distance(vertices[2]);
 	}
 	
 	/**
