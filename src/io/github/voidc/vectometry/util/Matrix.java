@@ -78,6 +78,22 @@ public class Matrix {
 	}
 	
 	/**
+	 * @param col index of the column
+	 * @return an array containing all values in the specified column
+	 */
+	public float[] getColumn(int col) {
+		return matrix[col];
+	}
+	
+	/**
+	 * @param row index of the row
+	 * @return an array containing all values in the specified row
+	 */
+	public float[] getRow(int row) {
+		return this.transpose().getColumn(row);
+	}
+	
+	/**
 	 * @return number of columns
 	 */
 	public int columns() {
@@ -210,6 +226,23 @@ public class Matrix {
 		for(int col = 0; col < result.columns(); col++) {
 			for(int row = 0; row < result.rows(); row++) {
 				result.set(col, row, row < this.rows() ? this.get(col, row) : other.get(col, row - this.rows()));
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * @param columns to be added
+	 * @param rows to be added
+	 * @return new matrix containing this matrix
+	 */
+	public Matrix expand(int columns, int rows) {
+		Matrix result = new Matrix(this.columns() + columns(), this.rows() + rows);
+		for(int col = 0; col < result.columns(); col++) {
+			for(int row = 0; row < result.rows(); row++) {
+				if(col < this.columns() && row < this.rows()) {
+					result.set(col, row, this.get(col, row));
+				}
 			}
 		}
 		return result;
