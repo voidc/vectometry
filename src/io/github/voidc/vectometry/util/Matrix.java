@@ -2,7 +2,6 @@ package io.github.voidc.vectometry.util;
 
 import io.github.voidc.vectometry.Vector;
 
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
@@ -18,7 +17,7 @@ public class Matrix {
 	 * @param values regular 2D array of float values
 	 */
 	public Matrix(float[][] values) {
-		if(!isArrayRegular(values)) throw new InvalidParameterException("Given array is not regular");
+		if(!isArrayRegular(values)) throw new IllegalArgumentException("Given array is not regular");
 		this.matrix = values;
 	}
 
@@ -54,7 +53,7 @@ public class Matrix {
 	 */
 	public Matrix(int columns, int rows, float[] values) {
 		this(columns, rows);
-		if(this.size() != values.length) throw new InvalidParameterException("Given array does not fit into the matrix");
+		if(this.size() != values.length) throw new IllegalArgumentException("Given array does not fit into the matrix");
 		for(int col = 0; col < this.columns(); col++) {
 			for(int row = 0; row < this.rows(); row++) {
 				this.set(col, row, values[col*(this.columns()+1)+row]);
@@ -156,7 +155,7 @@ public class Matrix {
 	 * @return new matrix with the same number of columns as the other matrix and the same number of rows as this matrix
 	 */
 	public Matrix multiply(Matrix other) {
-		if(this.columns() != other.rows()) throw new InvalidParameterException("The given matrices can't be multiplied");
+		if(this.columns() != other.rows()) throw new IllegalArgumentException("The given matrices can't be multiplied");
 		Matrix result = new Matrix(other.columns(  ), this.rows());
 		for(int col = 0; col < result.columns(); col++) {
 			for(int row = 0; row < result.rows(); row++) {
@@ -190,7 +189,7 @@ public class Matrix {
 	 * @return united matrix
 	 */
 	public Matrix joinRight(Matrix other) {
-		if(this.rows() != other.rows()) throw new InvalidParameterException("The given matrices can't be joined right");
+		if(this.rows() != other.rows()) throw new IllegalArgumentException("The given matrices can't be joined right");
 		Matrix result = new Matrix(this.columns() + other.columns(), this.rows());
 		for(int col = 0; col < result.columns(); col++) {
 			for(int row = 0; row < result.rows(); row++) {
@@ -205,12 +204,12 @@ public class Matrix {
 	 * @param other matrix
 	 * @return united matrix
 	 */
-	public Matrix joinBottom(Matrix mat) {
-		if(this.columns() != mat.columns()) throw new InvalidParameterException("The given matrices can't be joined right");
-		Matrix result = new Matrix(this.columns(), this.rows() + mat.rows());
+	public Matrix joinBottom(Matrix other) {
+		if(this.columns() != other.columns()) throw new IllegalArgumentException("The given matrices can't be joined right");
+		Matrix result = new Matrix(this.columns(), this.rows() + other.rows());
 		for(int col = 0; col < result.columns(); col++) {
 			for(int row = 0; row < result.rows(); row++) {
-				result.set(col, row, row < this.rows() ? this.get(col, row) : mat.get(col, row - this.rows()));
+				result.set(col, row, row < this.rows() ? this.get(col, row) : other.get(col, row - this.rows()));
 			}
 		}
 		return result;
@@ -227,7 +226,7 @@ public class Matrix {
 	}
 	
 	public Matrix operate(Matrix mat, BinaryOperator<Float> operator) {
-		if(!this.typeEquals(mat)) throw new InvalidParameterException("The given matrix is not the same size as this matrix");
+		if(!this.typeEquals(mat)) throw new IllegalArgumentException("The given matrix is not the same size as this matrix");
 		Matrix nMat = new Matrix(this.columns(), this.rows());
 		for(int x = 0; x < this.columns(); x++) {
 			for(int y = 0; y < this.rows(); y++) {
