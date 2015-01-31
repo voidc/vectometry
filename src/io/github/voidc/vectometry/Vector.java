@@ -13,8 +13,8 @@ public class Vector implements Comparable<Vector> {
 	public static final Vector DOWN = new Vector(0, -0);
 	
 	/**
-	 * @param x coordinate
-	 * @param y coordinate
+	 * @param x value
+	 * @param y value
 	 */
 	public Vector(float x, float y) {
 		this.x = x;
@@ -27,6 +27,29 @@ public class Vector implements Comparable<Vector> {
 	 */
 	public Vector(Angle angle, float length) {
 		this(angle.cos()*length, angle.sin()*length);
+	}
+	
+	/**
+	 * @param vec Vector to be copied
+	 */
+	public Vector(Vector vec) {
+		this(vec.x, vec.y);
+	}
+	
+	/**
+	 * @param x value of the returned vector
+	 * @return a new vector with the given x value and the y value of this vector
+	 */
+	public Vector withX(float x) {
+		return new Vector(x, this.y);
+	}
+	
+	/**
+	 * @param y value of the returned vector
+	 * @return a new vector with the given y value and the x value of this vector
+	 */
+	public Vector withY(float y) {
+		return new Vector(this.x, y);
 	}
 	
 	/**
@@ -165,6 +188,13 @@ public class Vector implements Comparable<Vector> {
 	public Vector resize(float length) {
 		return this.scale(length/this.length());
 	}
+
+	/**
+	 * @return unit vector with the same direction as this vector
+	 */
+	public Vector unit() {
+		return this.resize(1);
+	}
 	
 	/**
 	 * @see #resize(float)
@@ -269,7 +299,7 @@ public class Vector implements Comparable<Vector> {
 	
 	@Override
 	public Vector clone() {
-		return new Vector(this.x, this.y);
+		return new Vector(this);
 	}
 	
 	@Override
